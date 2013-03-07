@@ -1,0 +1,1 @@
+Test extensions for android camera & opencv extensions for Kivy on python-for-android.
