@@ -32,12 +32,14 @@ cdef extern from "opencv2/core/core.hpp" namespace "cv" nogil:
     Mat()
     Mat(Size size, int type) except +
     Mat(int rows, int cols, int type) except +
-    Mat(Size size, int type, void * data, size_t step=AUTO_STEP) except +
-    Mat(int rows, int cols, int type, void * data, size_t step=AUTO_STEP) except +
+    Mat(Size size, int type, void * data) except +
+    Mat(int rows, int cols, int type, void * data) except +
     Size size()
     int total()
     int elemSize()
     bool isContinuous()
+    void setTo(unsigned char * data)
+    void create(int rows, int cols, int type)
     unsigned char * ptr(int i0=0)
     unsigned char * data
 

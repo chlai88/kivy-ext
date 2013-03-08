@@ -44,7 +44,7 @@ class CameraPreview implements Runnable, Camera.PreviewCallback {
 	private static String TAG = "CameraPreview";
 
 	private Camera camera;
-	private int deviceID = -1;
+	private int deviceId = -1;
 	private byte[] buffer;
 	private int width, height, targetFps;
 	private Thread thread;
@@ -86,14 +86,16 @@ class CameraPreview implements Runnable, Camera.PreviewCallback {
 		initGrabber(w,h,_targetFps,-1);
 	}
 	
-	public void initGrabber(int w, int h, int _targetFps, int texID){
-		OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, PythonActivity.mActivity, mLoaderCallback);
+	public void initGrabber(int w, int h, int _targetFps, int deviceId){
+		// OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION_2_4_3, PythonActivity.mActivity, mLoaderCallback);
+		this.deviceId = deviceId;
 
-		if(deviceID==-1)
+		if(deviceId==-1)
 			camera = Camera.open();
 		else{			
 			try {
 				int numCameras = (Integer) Camera.class.getMethod("getNumberOfCameras").invoke(null);
+				Log.v(TAG, "Number of cameras: " + numCameras);
 				Class<?> cameraInfoClass = Class.forName("android.hardware.Camera$CameraInfo");
 				Object cameraInfo = null;
 				Field field = null;
@@ -107,12 +109,12 @@ class CameraPreview implements Runnable, Camera.PreviewCallback {
 				for(int i=0;i<numCameras;i++){
 					getCameraInfoMethod.invoke( null, i, cameraInfo );
 	                int facing = field.getInt( cameraInfo );
-	                Log.v("OF","Camera " + i + " facing: " + facing);
+	                Log.v(TAG,"Camera " + i + " facing: " + facing);
 				}
-				camera = (Camera) Camera.class.getMethod("open", Integer.TYPE).invoke(null, deviceID);
+				camera = (Camera) Camera.class.getMethod("open", Integer.TYPE).invoke(null, deviceId);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
-				Log.e("OF","Error trying to open specific camera, trying default",e);
+				Log.e(TAG,"Error trying to open specific camera, trying default",e);
 				camera = Camera.open();
 			} 
 		}
@@ -125,7 +127,7 @@ class CameraPreview implements Runnable, Camera.PreviewCallback {
 				Method setPreviewTexture = camera.getClass().getMethod("setPreviewTexture", surfaceTextureClass);
 				setPreviewTexture.invoke(camera, surfaceTexture);
 			} catch (Exception e1) {
-				Log.e("OF","Error initializing gl surface",e1);
+				Log.e(TAG,"Error initializing gl surface",e1);
 			} 
 		}
 
@@ -220,8 +222,8 @@ class CameraPreview implements Runnable, Camera.PreviewCallback {
 			Log.e(TAG,"error adding callback",e);
 		}
 		
-		//camera.addCallbackBuffer(buffer);
-		//camera.setPreviewCallbackWithBuffer(this);
+		// camera.addCallbackBuffer(buffer);
+		// camera.setPreviewCallbackWithBuffer(this);
 		try{
 			camera.startPreview();
 			previewStarted = true;

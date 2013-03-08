@@ -36,8 +36,8 @@ include_dirs=['.']
 libraries = ['gnustl_static', 'opencv_core', 'opencv_imgproc', 'SDL']
 library_dirs = []
 extra_objects = [ join(OPENCV_LIB_DIR, 'libopencv_core.a'), join(OPENCV_LIB_DIR,'libopencv_imgproc.a') ]
-extra_compile_args =['-ggdb', '-O2']
-extra_link_args = []
+extra_compile_args =['-g', '-O2']
+extra_link_args = ['-g']
 extensions = []
 
 # if not have_cython:
